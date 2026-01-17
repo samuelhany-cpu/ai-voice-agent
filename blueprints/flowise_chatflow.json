@@ -1,0 +1,42 @@
+{
+    "name": "Reseller Logic",
+    "nodes": [
+        {
+            "id": "chatOpenAI_0",
+            "label": "ChatOpenAI",
+            "name": "chatOpenAI",
+            "type": "ChatOpenAI",
+            "inputs": {
+                "modelName": "gpt-4-turbo",
+                "temperature": 0.7
+            }
+        },
+        {
+            "id": "bufferMemory_0",
+            "label": "Buffer Memory",
+            "name": "bufferMemory",
+            "type": "BufferMemory"
+        },
+        {
+            "id": "promptTemplate_0",
+            "label": "Prompt Template",
+            "name": "promptTemplate",
+            "type": "PromptTemplate",
+            "inputs": {
+                "template": "You are a helpful Voice Reseller Agent for 'TechGear Shop'. \nYour goal is to sell user electronics.\n\nCurrent Product List:\n- Noise Cancelling Headphones ($199) - In Stock\n- Wireless Mouse ($49) - Low Stock\n- Mechanical Keyboard ($129) - Out of Stock\n\nRules:\n1. Keep answers SHORT and spoken-style (under 2 sentences preferred).\n2. Be enthusiastic but professional.\n3. If shipping is asked, say 'We ship worldwide for $10 flat rate'.\n4. If user asks for something not listed, politely decline.\n\nCurrent conversation:\n{history}\nUser: {input}\nAI:"
+            }
+        },
+        {
+            "id": "llmChain_0",
+            "label": "LLM Chain",
+            "name": "llmChain",
+            "type": "LLMChain",
+            "inputs": {
+                "llm": "{{chatOpenAI_0}}",
+                "prompt": "{{promptTemplate_0}}",
+                "memory": "{{bufferMemory_0}}"
+            }
+        }
+    ],
+    "description": "Simple Sales Logic for Voice Agent"
+}

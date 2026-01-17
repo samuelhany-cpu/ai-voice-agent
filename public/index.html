@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Reseller Agent MVP</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        h1 { margin-bottom: 0.5rem; color: #333; }
+        p { color: #666; margin-bottom: 2rem; }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+
+        #recordBtn {
+            background-color: #2563eb;
+            color: white;
+        }
+        #recordBtn:hover { background-color: #1d4ed8; }
+        #recordBtn:disabled { background-color: #93c5fd; cursor: not-allowed; }
+
+        #stopBtn {
+            background-color: #dc2626;
+            color: white;
+            display: none;
+        }
+        #stopBtn:hover { background-color: #b91c1c; }
+
+        .status {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+            height: 20px;
+        }
+
+        .pulse {
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sales Agent</h1>
+        <p>Press record to ask about products.</p>
+        
+        <button id="recordBtn">🎙️ Start Recording</button>
+        <button id="stopBtn">⏹️ Stop & Send</button>
+
+        <div class="status" id="statusText">Ready</div>
+        
+        <audio id="audioPlayer" controls style="display:none; margin-top: 20px; width: 100%;"></audio>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
