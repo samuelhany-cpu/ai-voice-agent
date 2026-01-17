@@ -114,6 +114,10 @@ Visit `http://localhost:3000` in your browser.
 
 *   **Mock Mode:** Press Record, say something, and stop. You should hear an echo or mock response instantly.
 *   **Live Mode:** (Ensure `MOCK_MODE=false` in `.env`). The system will transcribe your voice, ask the AI agent, and speak back the response.
+*   **Hands-Free Mode:** The interface now features an **"Orb" UI** with **Voice Activity Detection (VAD)**.
+    *   Tap the Orb to start.
+    *   Speak naturally; the system detects silence (1.5s) and automatically stops recording.
+    *   After the AI replies, it automatically listens for your next response, creating a fluid conversation loop.
 
 ---
 
