@@ -1,90 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice Reseller Agent MVP</title>
+    <title>Voice Reseller Agent - Live Mode</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
 
         .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             text-align: center;
-            width: 300px;
-        }
-
-        h1 { margin-bottom: 0.5rem; color: #333; }
-        p { color: #666; margin-bottom: 2rem; }
-
-        button {
+            position: relative;
             width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
+            max-width: 400px;
+        }
+
+        /* The Main Orb */
+        .orb {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #eee, #ddd);
+            /* Default Inactive */
+            margin: 0 auto 40px auto;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
             cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        #recordBtn {
-            background-color: #2563eb;
-            color: white;
+        .orb-icon {
+            font-size: 60px;
+            color: #666;
+            transition: color 0.3s;
         }
-        #recordBtn:hover { background-color: #1d4ed8; }
-        #recordBtn:disabled { background-color: #93c5fd; cursor: not-allowed; }
 
-        #stopBtn {
-            background-color: #dc2626;
-            color: white;
-            display: none;
+        /* States */
+        /* 1. Listening (Blue Pulse) */
+        .orb.listening {
+            background: #ffffff;
+            box-shadow: 0 0 50px rgba(59, 130, 246, 0.6);
+            transform: scale(1.1);
+            animation: breathe 3s infinite ease-in-out;
         }
-        #stopBtn:hover { background-color: #b91c1c; }
 
+        .orb.listening .orb-icon {
+            color: #2563eb;
+        }
+
+        /* 2. Thinking (Purple Spin) */
+        .orb.thinking {
+            background: #ffffff;
+            box-shadow: 0 0 50px rgba(147, 51, 234, 0.6);
+            transform: scale(0.9);
+            animation: spin-pulse 2s infinite linear;
+        }
+
+        .orb.thinking .orb-icon {
+            color: #9333ea;
+        }
+
+        /* 3. Speaking (Green Active) */
+        .orb.speaking {
+            background: #ffffff;
+            box-shadow: 0 0 60px rgba(34, 197, 94, 0.6);
+            transform: scale(1.05);
+        }
+
+        .orb.speaking .orb-icon {
+            color: #16a34a;
+        }
+
+        /* Status Text */
         .status {
-            margin-top: 20px;
+            font-size: 24px;
+            font-weight: 300;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            min-height: 36px;
+        }
+
+        .sub-status {
             font-size: 14px;
             color: #888;
-            height: 20px;
+            min-height: 20px;
         }
 
-        .pulse {
-            animation: pulse-animation 2s infinite;
+        /* Visualizer Ring (Fake VAD) */
+        .ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            z-index: -1;
+            transition: all 0.1s;
         }
 
-        @keyframes pulse-animation {
-            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        @keyframes breathe {
+            0% {
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 60px rgba(59, 130, 246, 0.8);
+            }
+
+            100% {
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+            }
+        }
+
+        @keyframes spin-pulse {
+            0% {
+                box-shadow: 0 0 30px rgba(147, 51, 234, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 50px rgba(147, 51, 234, 0.8);
+            }
+
+            100% {
+                box-shadow: 0 0 30px rgba(147, 51, 234, 0.4);
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>Sales Agent</h1>
-        <p>Press record to ask about products.</p>
-        
-        <button id="recordBtn">🎙️ Start Recording</button>
-        <button id="stopBtn">⏹️ Stop & Send</button>
+        <div class="orb" id="orb">
+            <div class="orb-icon" id="orbIcon">🎙️</div>
+            <div class="ring" id="vadRing"></div>
+        </div>
 
-        <div class="status" id="statusText">Ready</div>
-        
-        <audio id="audioPlayer" controls style="display:none; margin-top: 20px; width: 100%;"></audio>
+        <div class="status" id="statusText">Tap to Start</div>
+        <div class="sub-status" id="subStatusText"></div>
+
+        <audio id="audioPlayer" style="display:none;"></audio>
     </div>
 
     <script src="app.js"></script>
 </body>
+
 </html>
